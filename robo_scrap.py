@@ -20,27 +20,34 @@ def get_robots_txt(url):
     else:
         path = url + '/'
 
-    req = urllib.request.urlopen(path + "robots.txt", data=None)
-    data = io.TextIOWrapper(req, encoding='utf-8')
-    return data.read()
+    try:
+        req = urllib.request.urlopen(path + "robots.txt", data=None)
+        data = io.TextIOWrapper(req, encoding='utf-8')
+        return data.read()
+    except urllib.error.HTTPError as e:
+        if e.code == 403:
+            print("Forbidden: Access to robots.txt denied.")
+        else:
+            print(f"An error occured: {e}")
 
 robots_txt = get_robots_txt(url)
-lines = robots_txt.splitlines()
+if robots_txt:
+    lines = robots_txt.splitlines()
 
-user_agents = []
-disallows = []
-for line in lines:
-    if line.startswith("User-agent"):
-        user_agent = line.split(":")[1].strip()
-        user_agents.append(user_agent)
-    elif line.startswith("Disallow"):
-        disallow = line.split(":")[1].strip()
-        disallows.append(disallow)
+    user_agents = []
+    disallows = []
+    for line in lines:
+        if line.startswith("User-agent"):
+            user_agent = line.split(":")[1].strip()
+            user_agents.append(user_agent)
+        elif line.startswith("Disallow"):
+            disallow = line.split(":")[1].strip()
+            disallows.append(disallow)
 
-print("User-Agents:")
-for user_agent in user_agents:
-    print(f"- {user_agent}")
+    print("User-Agents:")
+    for user_agent in user_agents:
+        print(f"- {user_agent}")
 
-print("Disallows:")
-for disallow in disallows:
-    print(f"- {disallow}")
+    print("Disallows:")
+    for disallow in disallows:
+        print(f"- {disallow}")
